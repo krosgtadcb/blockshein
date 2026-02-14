@@ -38,8 +38,10 @@ pip install -r requirements.txt
 
 O si tienes problemas:
 ```bash
-pip install Flask==2.3.0 Flask-CORS==4.0.0 Werkzeug==2.3.0
+pip install Flask==3.0.0 Flask-CORS==4.0.0 Werkzeug==3.0.0
 ```
+
+**Nota**: Si tienes Python 3.14 y error de `pkgutil`, ver `SOLUCION_PYTHON_314.md`
 
 ---
 
