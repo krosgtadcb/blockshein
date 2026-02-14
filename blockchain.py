@@ -1,6 +1,7 @@
 import hashlib
 import json
 import time
+import random
 from datetime import datetime
 from collections import defaultdict
 from typing import List, Dict, Any, Optional
@@ -60,11 +61,10 @@ class Transaction:
 class Blockchain:
     """Implementa la blockchain con minería y gestión de transacciones"""
     
-    def __init__(self, difficulty: int = 4):
+    def __init__(self, difficulty: int = 99):
         self.chain: List[Block] = []
         self.pending_transactions: List[Transaction] = []
         self.difficulty = difficulty
-        self.mining_reward = 10  # Recompensa por minar un bloque
         self.balances: Dict[str, float] = defaultdict(float)
         self.all_miners: set = set()  # Registro de todos los mineros
         
@@ -105,8 +105,11 @@ class Blockchain:
         # Registrar minero
         self.all_miners.add(miner_address)
         
+        # Recompensa aleatoria entre 5 y 50
+        mining_reward = random.uniform(5, 50)
+        
         # Recompensa de minería para el minero
-        mining_transaction = Transaction("SISTEMA", miner_address, self.mining_reward)
+        mining_transaction = Transaction("SISTEMA", miner_address, mining_reward)
         self.pending_transactions.insert(0, mining_transaction)
         
         # Distribuir comisiones a todos los mineros
