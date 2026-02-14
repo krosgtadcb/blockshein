@@ -12,10 +12,8 @@ app.secret_key = 'tu_clave_secreta_super_segura_aqui'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
 CORS(app)
 
-# Inicializar blockchain con dificultad 99%
 blockchain = Blockchain(difficulty=99)
 
-# Almacenamiento de usuarios
 users_file = 'users.json'
 balances_file = 'balances.json'
 
@@ -41,8 +39,6 @@ def save_balances(balances):
 
 users = load_users()
 balances = load_balances()
-
-# ============ RUTAS DE AUTENTICACIÓN ============
 
 @app.route('/api/register', methods=['POST'])
 def register():
@@ -112,8 +108,6 @@ def get_user():
         'balance': blockchain.get_balance(wallet_address)
     }), 200
 
-# ============ RUTAS DE BLOCKCHAIN ============
-
 @app.route('/api/balance/<wallet_address>', methods=['GET'])
 def get_balance(wallet_address):
     balance = blockchain.get_balance(wallet_address)
@@ -158,7 +152,6 @@ def mine_block():
     block = blockchain.mine_pending_transactions(miner_address)
     
     if block:
-        # Obtener la recompensa del bloque minado
         mining_tx = next((tx for tx in block.transactions if tx['sender'] == 'SISTEMA'), None)
         mining_reward = mining_tx['amount'] if mining_tx else 0
         
@@ -214,16 +207,13 @@ def get_stats():
         'difficulty': blockchain.difficulty
     }), 200
 
-# ============ SERVIR FRONTEND ============
-
 HTML_TEMPLATE = '''
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlockChain - Sistema de Mineria</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Silk Road - Blockchain Mining</title>
     <style>
         * {
             margin: 0;
@@ -231,554 +221,430 @@ HTML_TEMPLATE = '''
             box-sizing: border-box;
         }
 
-        :root {
-            --primary: #1a1f3a;
-            --secondary: #2d3561;
-            --accent: #00d9ff;
-            --accent-alt: #ff006e;
-            --success: #00ff88;
-            --warning: #ffa500;
-            --danger: #ff0000;
-            --text-light: #e0e0e0;
-        }
-
-        html, body {
-            height: 100%;
-            width: 100%;
-        }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--primary) 0%, #0f1629 50%, var(--primary) 100%);
-            color: var(--text-light);
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            background: #0a0e27;
+            color: #e0e0e0;
+            line-height: 1.6;
             min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        .navbar {
-            background: rgba(26, 31, 58, 0.95);
-            border-bottom: 2px solid var(--accent);
-            padding: 1.5rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--accent), var(--accent-alt));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .nav-buttons {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .nav-buttons button {
-            background: linear-gradient(135deg, var(--accent), #00ccee);
-            color: var(--primary);
-            border: none;
-            padding: 0.7rem 1.5rem;
-            cursor: pointer;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
-        }
-
-        .nav-buttons button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0, 217, 255, 0.4);
-        }
-
-        .nav-buttons button:active {
-            transform: translateY(-1px);
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem 1rem;
+            padding: 20px;
         }
 
-        .auth-section, .dashboard-section {
+        header {
+            text-align: center;
+            padding: 40px 0 20px;
+            border-bottom: 1px solid #1a1f3a;
+            margin-bottom: 40px;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: normal;
+            letter-spacing: 4px;
+            color: #fff;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: #666;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 12px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+            text-transform: uppercase;
+            font-family: 'Monaco', monospace;
+        }
+
+        nav button:hover {
+            color: #fff;
+        }
+
+        nav button#logoutBtn {
             display: none;
         }
 
-        .auth-section.active, .dashboard-section.active {
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .section {
+            background: #0f1434;
+            border: 1px solid #1a1f3a;
+            padding: 30px;
+        }
+
+        .section h2 {
+            font-size: 14px;
+            font-weight: normal;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #fff;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #1a1f3a;
+        }
+
+        .auth-section, .dashboard-content {
+            display: none;
+        }
+
+        .auth-section.active, .dashboard-content.active {
             display: block;
         }
 
-        .auth-container {
-            max-width: 420px;
-            margin: 4rem auto;
-            background: rgba(45, 53, 97, 0.8);
-            border: 2px solid var(--accent);
-            padding: 3rem;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 217, 255, 0.2);
-            backdrop-filter: blur(10px);
-        }
-
-        .auth-container h2 {
-            background: linear-gradient(135deg, var(--accent), var(--accent-alt));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            font-size: 1.8rem;
-        }
-
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 0.6rem;
-            color: var(--accent);
-            font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 8px;
         }
 
         .form-group input {
             width: 100%;
-            padding: 1rem;
-            background: rgba(0, 217, 255, 0.08);
-            border: 1.5px solid var(--accent);
-            color: var(--text-light);
-            border-radius: 8px;
-            font-family: 'Segoe UI', sans-serif;
-            transition: all 0.3s ease;
-            font-size: 1rem;
+            background: #0a0e27;
+            border: 1px solid #1a1f3a;
+            color: #e0e0e0;
+            padding: 12px;
+            font-family: 'Monaco', monospace;
+            font-size: 12px;
+            transition: border-color 0.3s;
         }
 
         .form-group input:focus {
             outline: none;
-            box-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
-            background: rgba(0, 217, 255, 0.15);
-            border-color: var(--accent-alt);
+            border-color: #666;
+            background: #0f1434;
         }
 
-        button.btn {
-            width: 100%;
-            padding: 1.1rem;
-            background: linear-gradient(135deg, var(--accent), #00ccee);
-            color: var(--primary);
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
+        button {
+            background: #0a0e27;
+            border: 1px solid #1a1f3a;
+            color: #e0e0e0;
+            padding: 12px 20px;
             cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
+            font-size: 11px;
             letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: 'Monaco', monospace;
+            transition: all 0.3s;
         }
 
-        button.btn:hover {
-            box-shadow: 0 10px 30px rgba(0, 217, 255, 0.4);
-            transform: translateY(-2px);
+        button:hover {
+            border-color: #666;
+            color: #fff;
         }
 
-        button.btn:active {
-            transform: translateY(0);
+        button:active {
+            background: #1a1f3a;
+        }
+
+        .btn-large {
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
         }
 
         .toggle-auth {
             text-align: center;
-            margin-top: 1.5rem;
-            color: var(--text-light);
+            margin-top: 20px;
+            font-size: 11px;
         }
 
         .toggle-auth button {
             background: none;
             border: none;
-            color: var(--accent);
-            cursor: pointer;
+            color: #666;
+            padding: 0;
             text-decoration: underline;
-            font-family: 'Segoe UI', sans-serif;
-            font-weight: 600;
+        }
+
+        .toggle-auth button:hover {
+            color: #999;
         }
 
         .alert {
-            padding: 1.2rem;
-            margin: 1rem 0;
-            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-left: 2px solid;
+            font-size: 11px;
             display: none;
-            border-left: 4px solid;
-            font-weight: 500;
         }
 
         .alert.show {
             display: block;
-            animation: slideDown 0.3s ease;
         }
 
         .alert.success {
-            background: rgba(0, 255, 136, 0.1);
-            border-left-color: var(--success);
-            color: var(--success);
+            background: rgba(0, 255, 100, 0.1);
+            border-left-color: #00ff64;
+            color: #00ff64;
         }
 
         .alert.error {
             background: rgba(255, 0, 0, 0.1);
-            border-left-color: var(--danger);
-            color: var(--danger);
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            border-left-color: #ff0000;
+            color: #ff0000;
         }
 
         .dashboard {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-        }
-
-        .card {
-            background: rgba(45, 53, 97, 0.6);
-            border: 2px solid rgba(0, 217, 255, 0.3);
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .card:hover {
-            border-color: var(--accent);
-            box-shadow: 0 15px 50px rgba(0, 217, 255, 0.2);
-            transform: translateY(-5px);
-        }
-
-        .card h3 {
-            background: linear-gradient(135deg, var(--accent), var(--accent-alt));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid rgba(0, 217, 255, 0.3);
-            padding-bottom: 1rem;
-            font-size: 1.3rem;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
-
-        .card i {
-            color: var(--accent);
-        }
-
-        .balance-display {
-            font-size: 2.8rem;
-            color: var(--success);
-            font-weight: 700;
-            margin: 1.5rem 0;
-            text-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
-        }
-
-        .wallet-address {
-            color: var(--accent);
-            font-size: 0.85rem;
-            word-break: break-all;
-            background: rgba(0, 217, 255, 0.08);
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 1.5rem 0;
-            border-left: 3px solid var(--accent);
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        .stat {
-            background: rgba(0, 217, 255, 0.05);
-            padding: 1.2rem;
-            border-radius: 8px;
-            text-align: center;
-            border: 1px solid rgba(0, 217, 255, 0.2);
-        }
-
-        .stat-value {
-            font-size: 1.8rem;
-            color: var(--success);
-            font-weight: 700;
-        }
-
-        .stat-label {
-            color: var(--accent);
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .transaction-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        .transaction-form input {
-            padding: 1rem;
-            background: rgba(0, 217, 255, 0.08);
-            border: 1.5px solid rgba(0, 217, 255, 0.3);
-            color: var(--text-light);
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-        }
-
-        .transaction-form input:focus {
-            outline: none;
-            box-shadow: 0 0 15px rgba(0, 217, 255, 0.4);
-            border-color: var(--accent);
-            background: rgba(0, 217, 255, 0.12);
-        }
-
-        .transaction-form button {
-            padding: 1rem;
-            background: linear-gradient(135deg, var(--accent-alt), #ff0066);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 700;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .transaction-form button:hover {
-            box-shadow: 0 10px 30px rgba(255, 0, 110, 0.4);
-            transform: translateY(-2px);
-        }
-
-        .mine-btn {
-            padding: 1.3rem;
-            background: linear-gradient(135deg, var(--success), #00dd77);
-            color: var(--primary);
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 1.05rem;
-            transition: all 0.3s ease;
-            margin-top: 1.5rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .mine-btn:hover:not(:disabled) {
-            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.4);
-            transform: translateY(-3px);
-        }
-
-        .mine-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .history {
-            margin-top: 1.5rem;
-            max-height: 350px;
-            overflow-y: auto;
-        }
-
-        .history::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .history::-webkit-scrollbar-track {
-            background: rgba(0, 217, 255, 0.1);
-            border-radius: 10px;
-        }
-
-        .history::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 10px;
-        }
-
-        .transaction {
-            background: rgba(0, 217, 255, 0.08);
-            padding: 1rem;
-            margin: 0.8rem 0;
-            border-radius: 8px;
-            border-left: 4px solid var(--accent);
-            transition: all 0.2s ease;
-        }
-
-        .transaction:hover {
-            background: rgba(0, 217, 255, 0.12);
-        }
-
-        .transaction.sent {
-            border-left-color: var(--accent-alt);
-        }
-
-        .transaction.received {
-            border-left-color: var(--success);
-        }
-
-        .transaction i {
-            margin-right: 0.5rem;
-        }
-
-        .transaction-info {
-            font-size: 0.9rem;
-            color: var(--accent);
-            margin-top: 0.5rem;
-        }
-
-        .loading {
-            text-align: center;
-            color: var(--accent);
-            font-weight: 600;
-        }
-
-        .loading i {
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .info-text {
-            font-size: 0.85rem;
-            color: var(--accent);
-            margin-top: 1rem;
-            opacity: 0.8;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
         }
 
         @media (max-width: 768px) {
-            .dashboard {
+            .dashboard, .content {
                 grid-template-columns: 1fr;
             }
-            .logo {
-                font-size: 1.4rem;
+
+            .section {
+                padding: 20px;
             }
-            .card {
-                padding: 1.8rem;
+
+            nav {
+                gap: 15px;
+                flex-wrap: wrap;
             }
+        }
+
+        .stat-item {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #1a1f3a;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #666;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 16px;
+            color: #fff;
+            font-weight: normal;
+        }
+
+        .history {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .tx-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #1a1f3a;
+            font-size: 11px;
+        }
+
+        .tx-item:last-child {
+            border-bottom: none;
+        }
+
+        .tx-type {
+            color: #666;
+            margin-bottom: 3px;
+        }
+
+        .tx-amount {
+            color: #fff;
+            font-weight: normal;
+        }
+
+        .tx-address {
+            color: #666;
+            font-size: 10px;
+            margin-top: 3px;
+            word-break: break-all;
+        }
+
+        .mining-status {
+            margin-top: 20px;
+            padding: 15px;
+            background: #0a0e27;
+            border: 1px solid #1a1f3a;
+            text-align: center;
+            font-size: 11px;
+            color: #666;
+            display: none;
+        }
+
+        .mining-status.active {
+            display: block;
+            color: #00ff64;
+            border-color: #1a1f3a;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 1px solid #666;
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .box {
+            background: #0a0e27;
+            border: 1px solid #1a1f3a;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .box-label {
+            font-size: 10px;
+            color: #666;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .box-value {
+            font-size: 18px;
+            color: #fff;
         }
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <div class="logo">
-            <i class="fas fa-cube"></i> BlockChain Mining
-        </div>
-        <div class="nav-buttons">
-            <button onclick="showStats()">
-                <i class="fas fa-chart-bar"></i> Estadisticas
-            </button>
-            <button id="logoutBtn" style="display:none;" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i> Cerrar
-            </button>
-        </div>
-    </div>
-
     <div class="container">
-        <div id="authSection" class="auth-section active">
-            <div class="auth-container">
-                <h2><i class="fas fa-key"></i> <span id="authTitle">Iniciar Sesion</span></h2>
-                <div id="alertBox" class="alert"></div>
-                
-                <form id="authForm">
-                    <div class="form-group">
-                        <label for="email"><i class="fas fa-envelope"></i> Correo Electronico</label>
-                        <input type="email" id="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password"><i class="fas fa-lock"></i> Contraseña</label>
-                        <input type="password" id="password" required>
-                    </div>
-                    <button type="submit" class="btn" id="authBtn">Iniciar Sesion</button>
-                </form>
+        <header>
+            <h1 class="title">Silk Road</h1>
+            <p class="subtitle">Blockchain Mining Network</p>
+            <nav>
+                <button onclick="showStats()">Stats</button>
+                <button onclick="showAbout()">About</button>
+                <button id="logoutBtn" onclick="logout()">Logout</button>
+            </nav>
+        </header>
 
-                <div class="toggle-auth">
-                    <p>No tienes cuenta? <button onclick="toggleAuth()">Registrate</button></p>
+        <div id="authSection" class="auth-section active">
+            <div class="content">
+                <div class="section">
+                    <h2>Sign In</h2>
+                    <div id="alertBox" class="alert"></div>
+                    <form id="authForm">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="password" required>
+                        </div>
+                        <button type="submit" class="btn-large" id="authBtn">Sign In</button>
+                    </form>
+                    <div class="toggle-auth">
+                        <p>No account? <button onclick="toggleAuth()">Sign Up</button></p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div id="dashboardSection" class="dashboard-section">
+        <div id="dashboardSection" class="dashboard-content">
             <div class="dashboard">
-                <div class="card">
-                    <h3><i class="fas fa-wallet"></i> Mi Billetera</h3>
-                    <div class="balance-display" id="balanceDisplay">0.00</div>
-                    <div class="wallet-address" id="walletAddress">Cargando...</div>
-                    <button class="btn" onclick="refreshBalance()">
-                        <i class="fas fa-sync-alt"></i> Actualizar
-                    </button>
+                <div class="section">
+                    <h2>Wallet</h2>
+                    <div class="stat-item">
+                        <div class="stat-label">Balance</div>
+                        <div class="stat-value" id="balanceDisplay">0.00</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Address</div>
+                        <div class="stat-value" id="walletAddress" style="font-size: 11px; word-break: break-all;">-</div>
+                    </div>
+                    <button class="btn-large" onclick="refreshBalance()">Refresh</button>
                 </div>
 
-                <div class="card">
-                    <h3><i class="fas fa-hammer"></i> Mineria</h3>
-                    <p style="color: var(--accent); margin-bottom: 1rem; font-size: 0.95rem;">
-                        Resuelve el Proof of Work y gana recompensas aleatorias (5-50 coins)
-                    </p>
-                    <div class="stats">
-                        <div class="stat">
-                            <div class="stat-value" id="blockCount">0</div>
-                            <div class="stat-label">Bloques</div>
+                <div class="section">
+                    <h2>Mining</h2>
+                    <div class="grid-2">
+                        <div class="box">
+                            <div class="box-label">Blocks</div>
+                            <div class="box-value" id="blockCount">0</div>
                         </div>
-                        <div class="stat">
-                            <div class="stat-value" id="pendingCount">0</div>
-                            <div class="stat-label">Pendientes</div>
+                        <div class="box">
+                            <div class="box-label">Pending</div>
+                            <div class="box-value" id="pendingCount">0</div>
                         </div>
                     </div>
-                    <button class="mine-btn" id="mineBtn" onclick="mineBlock()">
-                        <i class="fas fa-circle-notch"></i> Minar Bloque
-                    </button>
+                    <button class="btn-large" id="mineBtn" onclick="mineBlock()">Start Mining</button>
+                    <div class="mining-status" id="miningStatus">
+                        <span class="spinner"></span>Mining...
+                    </div>
                 </div>
 
-                <div class="card">
-                    <h3><i class="fas fa-paper-plane"></i> Enviar</h3>
-                    <div class="transaction-form">
-                        <input type="text" id="receiverAddress" placeholder="Direccion del receptor">
-                        <input type="number" id="amount" placeholder="Cantidad" min="0.1" step="0.1">
-                        <button onclick="sendTransaction()">Enviar Fondos</button>
+                <div class="section">
+                    <h2>Send Coins</h2>
+                    <div class="form-group">
+                        <label>Recipient Address</label>
+                        <input type="text" id="receiverAddress" placeholder="">
                     </div>
-                    <p class="info-text">
-                        <i class="fas fa-info-circle"></i> Se aplicara una comision del 2%
+                    <div class="form-group">
+                        <label>Amount</label>
+                        <input type="number" id="amount" placeholder="0.00" step="0.1">
+                    </div>
+                    <button class="btn-large" onclick="sendTransaction()">Send</button>
+                    <p style="font-size: 10px; color: #666; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px;">
+                        Network Fee: 2%
                     </p>
                 </div>
 
-                <div class="card">
-                    <h3><i class="fas fa-history"></i> Historial</h3>
+                <div class="section">
+                    <h2>Transaction History</h2>
                     <div class="history" id="history">
-                        <p class="loading">
-                            <i class="fas fa-spinner"></i> Cargando historial...
-                        </p>
+                        <p style="color: #666; text-align: center; padding: 20px 0;">Loading...</p>
                     </div>
-                    <button class="btn" onclick="loadHistory()" style="margin-top: 1rem; padding: 0.8rem;">
-                        <i class="fas fa-redo"></i> Actualizar
-                    </button>
+                    <button class="btn-large" onclick="loadHistory()">Reload</button>
                 </div>
             </div>
         </div>
@@ -797,8 +663,7 @@ HTML_TEMPLATE = '''
 
         function toggleAuth() {
             isLoginMode = !isLoginMode;
-            document.getElementById('authTitle').textContent = isLoginMode ? 'Iniciar Sesion' : 'Registrarse';
-            document.getElementById('authBtn').textContent = isLoginMode ? 'Iniciar Sesion' : 'Registrarse';
+            document.getElementById('authBtn').textContent = isLoginMode ? 'Sign In' : 'Sign Up';
         }
 
         document.getElementById('authForm').addEventListener('submit', async (e) => {
@@ -823,16 +688,16 @@ HTML_TEMPLATE = '''
                         showDashboard();
                         loadUserData();
                     } else {
-                        showAlert('Cuenta creada. Ahora inicia sesion.', 'success');
+                        showAlert('Account created. Please sign in.', 'success');
                         isLoginMode = true;
-                        toggleAuth();
+                        document.getElementById('authBtn').textContent = 'Sign In';
                         document.getElementById('authForm').reset();
                     }
                 } else {
                     showAlert(data.error, 'error');
                 }
             } catch (error) {
-                showAlert('Error de conexion', 'error');
+                showAlert('Connection error', 'error');
             }
         });
 
@@ -854,7 +719,7 @@ HTML_TEMPLATE = '''
             document.getElementById('authForm').reset();
             isLoginMode = true;
             showAuth();
-            showAlert('Sesion cerrada', 'success');
+            showAlert('Logged out', 'success');
         }
 
         async function loadUserData() {
@@ -869,7 +734,7 @@ HTML_TEMPLATE = '''
                     loadHistory();
                 }
             } catch (error) {
-                console.error('Error loading user data:', error);
+                console.error('Error:', error);
             }
         }
 
@@ -880,7 +745,7 @@ HTML_TEMPLATE = '''
                 const data = await response.json();
                 document.getElementById('balanceDisplay').textContent = data.balance.toFixed(2);
             } catch (error) {
-                console.error('Error refreshing balance:', error);
+                console.error('Error:', error);
             }
         }
 
@@ -890,7 +755,7 @@ HTML_TEMPLATE = '''
                 const data = await response.json();
                 document.getElementById('blockCount').textContent = data.length;
             } catch (error) {
-                console.error('Error loading stats:', error);
+                console.error('Error:', error);
             }
 
             try {
@@ -898,31 +763,34 @@ HTML_TEMPLATE = '''
                 const data = await response.json();
                 document.getElementById('pendingCount').textContent = data.count;
             } catch (error) {
-                console.error('Error loading pending:', error);
+                console.error('Error:', error);
             }
         }
 
         async function mineBlock() {
             const mineBtn = document.getElementById('mineBtn');
+            const status = document.getElementById('miningStatus');
             mineBtn.disabled = true;
-            mineBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Minando...';
+            mineBtn.style.opacity = '0.5';
+            status.classList.add('active');
 
             try {
                 const response = await fetch('/api/mine', { method: 'POST' });
                 const data = await response.json();
 
                 if (response.ok) {
-                    showAlert(`Bloque ${data.block.index} minado! Ganaste ${data.miner_reward.toFixed(2)} coins`, 'success');
+                    showAlert(`Block ${data.block.index} mined! Reward: ${data.miner_reward.toFixed(2)} coins`, 'success');
                     refreshBalance();
                     loadBlockStats();
                 } else {
                     showAlert(data.error, 'error');
                 }
             } catch (error) {
-                showAlert('Error al minar', 'error');
+                showAlert('Mining error', 'error');
             } finally {
                 mineBtn.disabled = false;
-                mineBtn.innerHTML = '<i class="fas fa-circle-notch"></i> Minar Bloque';
+                mineBtn.style.opacity = '1';
+                status.classList.remove('active');
             }
         }
 
@@ -931,7 +799,7 @@ HTML_TEMPLATE = '''
             const amount = parseFloat(document.getElementById('amount').value);
 
             if (!receiver || !amount || amount <= 0) {
-                showAlert('Datos invalidos', 'error');
+                showAlert('Invalid data', 'error');
                 return;
             }
 
@@ -945,7 +813,7 @@ HTML_TEMPLATE = '''
                 const data = await response.json();
 
                 if (response.ok) {
-                    showAlert(`Enviado: ${amount} coins (Comision: ${data.commission.toFixed(4)})`, 'success');
+                    showAlert(`Sent: ${amount} coins (Fee: ${data.commission.toFixed(4)})`, 'success');
                     document.getElementById('receiverAddress').value = '';
                     document.getElementById('amount').value = '';
                     loadBlockStats();
@@ -953,7 +821,7 @@ HTML_TEMPLATE = '''
                     showAlert(data.error, 'error');
                 }
             } catch (error) {
-                showAlert('Error al enviar', 'error');
+                showAlert('Send error', 'error');
             }
         }
 
@@ -965,47 +833,51 @@ HTML_TEMPLATE = '''
                 const historyDiv = document.getElementById('history');
 
                 if (data.history.length === 0) {
-                    historyDiv.innerHTML = '<p style="color: var(--accent); text-align: center;">Sin transacciones</p>';
+                    historyDiv.innerHTML = '<p style="color: #666; text-align: center; padding: 20px 0;">No transactions</p>';
                     return;
                 }
 
                 historyDiv.innerHTML = data.history.map(tx => {
                     const isSent = tx.sender === currentUser.wallet_address;
                     const other = isSent ? tx.receiver : tx.sender;
-                    const type = isSent ? 'Enviado' : 'Recibido';
-                    const className = isSent ? 'sent' : 'received';
-                    const icon = isSent ? 'fa-arrow-right' : 'fa-arrow-left';
+                    const type = isSent ? 'SENT' : 'RECEIVED';
 
-                    return `<div class="transaction ${className}">
-                        <div>
-                            <i class="fas ${icon}"></i>
-                            <strong>${type}</strong>
-                        </div>
-                        <div class="transaction-info">${other.substring(0, 8)}...</div>
-                        <div style="color: var(--success); font-weight: 700; margin-top: 0.5rem;">${tx.amount.toFixed(2)} coins</div>
+                    return `<div class="tx-item">
+                        <div class="tx-type">${type}</div>
+                        <div class="tx-amount">${tx.amount.toFixed(2)} coins</div>
+                        <div class="tx-address">${other.substring(0, 12)}...</div>
                     </div>`;
                 }).join('');
             } catch (error) {
-                console.error('Error loading history:', error);
+                console.error('Error:', error);
             }
         }
 
-        async function showStats() {
-            try {
-                const response = await fetch('/api/stats');
-                const data = await response.json();
-                alert(`ESTADISTICAS DE LA RED
+        function showStats() {
+            fetch('/api/stats')
+                .then(r => r.json())
+                .then(data => {
+                    alert(`NETWORK STATISTICS
 
-Bloques minados: ${data.total_blocks}
-Usuarios: ${data.total_users}
-Mineros activos: ${data.total_miners}
-Transacciones pendientes: ${data.pending_transactions}
-Balance total: ${data.total_balance.toFixed(2)} coins
-Dificultad: ${data.difficulty}%
-                `);
-            } catch (error) {
-                showAlert('Error al cargar estadisticas', 'error');
-            }
+Blocks: ${data.total_blocks}
+Users: ${data.total_users}
+Miners: ${data.total_miners}
+Pending TX: ${data.pending_transactions}
+Total Balance: ${data.total_balance.toFixed(2)} coins
+Difficulty: ${data.difficulty}%`);
+                });
+        }
+
+        function showAbout() {
+            alert(`SILK ROAD
+Blockchain Mining Network
+
+Difficulty: 99%
+Network Fee: 2%
+Block Reward: 5-50 coins (random)
+
+The Silk Road. The ancient network of trade routes connecting East and West. 
+Today, reimagined as a modern blockchain network for distributed mining.`);
         }
 
         window.addEventListener('load', async () => {
@@ -1019,11 +891,11 @@ Dificultad: ${data.difficulty}%
         });
 
         setInterval(() => {
-            if (currentUser) {
+            if (currentUser && !document.getElementById('miningStatus').classList.contains('active')) {
                 refreshBalance();
                 loadBlockStats();
             }
-        }, 10000);
+        }, 15000);
     </script>
 </body>
 </html>
@@ -1034,8 +906,8 @@ def index():
     return render_template_string(HTML_TEMPLATE)
 
 if __name__ == '__main__':
-    print("Iniciando servidor BlockChain...")
-    print("Abre el navegador en: http://localhost:5000")
-    print("Dificultad: 99%")
-    print("Recompensa: ALEATORIA (5-50 coins)")
+    print("Silk Road - Blockchain Mining Network")
+    print("http://localhost:5000")
+    print("Difficulty: 99%")
+    print("Mining started...")
     app.run(debug=True, host='0.0.0.0', port=5000)
