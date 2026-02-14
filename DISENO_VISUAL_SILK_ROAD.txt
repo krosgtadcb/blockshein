@@ -1,0 +1,310 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                                                                            ║
+║                         SILK ROAD - DISEÑO v3.0                           ║
+║                                                                            ║
+║                    MINIMALISTA | LIMPIO | PROFESIONAL                     ║
+║                                                                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ENCABEZADO
+
+    SILK ROAD
+    Blockchain Mining Network
+    
+    [Stats]  [About]  [Logout]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+AUTENTICACIÓN (v1.0)
+
+┌────────────────────────────────────────────────────────────┐
+│                                                            │
+│                                                            │
+│                        ┌──────────┐                        │
+│                        │ SIGN IN  │                        │
+│                        └──────────┘                        │
+│                                                            │
+│  Email                                                     │
+│  [_________________________________]                      │
+│                                                            │
+│  Password                                                  │
+│  [_________________________________]                      │
+│                                                            │
+│  [████████████ SIGN IN ████████████]                       │
+│                                                            │
+│  No account? Sign Up                                       │
+│                                                            │
+└────────────────────────────────────────────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DASHBOARD (Logueado)
+
+┌──────────────────────────────┬──────────────────────────────┐
+│                              │                              │
+│  WALLET                      │  MINING                      │
+│  ──────────────────────────  │  ──────────────────────────  │
+│                              │                              │
+│  Balance                     │  Blocks    │    Pending     │
+│  0.00                        │    0       │      0         │
+│                              │  ──────────────────────────  │
+│  Address                     │                              │
+│  a1b2c3d4e5f6...             │  [█████ START MINING █████]  │
+│                              │                              │
+│  [█████ REFRESH █████]       │  Mining...                   │
+│                              │  (spinner girando)           │
+└──────────────────────────────┴──────────────────────────────┘
+
+┌──────────────────────────────┬──────────────────────────────┐
+│                              │                              │
+│  SEND COINS                  │  TRANSACTION HISTORY         │
+│  ──────────────────────────  │  ──────────────────────────  │
+│                              │                              │
+│  Recipient Address           │  SENT                        │
+│  [_________________]         │  10.00 coins                 │
+│                              │  a1b2c3d4...                │
+│  Amount                      │                              │
+│  [_________________]         │  RECEIVED                    │
+│                              │  5.50 coins                  │
+│  [█████ SEND █████]          │  x7y8z9a0...                │
+│                              │                              │
+│  Network Fee: 2%             │  [█████ RELOAD █████]       │
+│                              │                              │
+└──────────────────────────────┴──────────────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+COLORES
+
+Fondo Principal:     #0a0e27  (Azul muy oscuro)
+Fondo Secciones:     #0f1434  (Azul oscuro + 1)
+Bordes:              #1a1f3a  (Azul oscuro + 2)
+Texto Principal:     #e0e0e0  (Gris claro)
+Texto Secundario:    #999     (Gris medio)
+Texto Destacado:     #666     (Gris oscuro)
+Éxito:               #00ff64  (Verde)
+Error:               #ff0000  (Rojo)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TIPOGRAFÍA
+
+Font: Monaco, Menlo, Ubuntu Mono (Monoespaciada)
+
+Títulos:       28px | UPPERCASE | letter-spacing 4px
+Subtítulos:    12px | UPPERCASE | letter-spacing 2px
+Secciones:     14px | UPPERCASE | letter-spacing 2px
+Botones:       11px | UPPERCASE | letter-spacing 1px
+Labels:        11px | UPPERCASE | color #666
+Datos:         16px | Normal
+Valores:       18px | Normal
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+COMPONENTES
+
+BOTÓN
+┌──────────────────────┐
+│   UPPERCASE TEXT     │    background: #0a0e27
+└──────────────────────┘    border: 1px solid #1a1f3a
+                            color: #e0e0e0
+Hover:                      border: 1px solid #666
+                            color: #fff
+Active:                     background: #1a1f3a
+
+INPUT
+┌──────────────────────┐
+│ Ingresa algo...      │    background: #0a0e27
+└──────────────────────┘    border: 1px solid #1a1f3a
+Focus:                      border: 1px solid #666
+                            background: #0f1434
+
+SECCIÓN
+┌────────────────────────────┐
+│ TITULO SECCION             │    background: #0f1434
+├────────────────────────────┤    border: 1px solid #1a1f3a
+│                            │    padding: 30px
+│  Contenido aquí            │
+│                            │
+└────────────────────────────┘
+
+ALERTA ÉXITO
+┌─ Mensaje de éxito aquí      background: rgba(0, 255, 100, 0.1)
+                              border-left: 2px solid #00ff64
+                              color: #00ff64
+
+ALERTA ERROR
+┌─ Mensaje de error aquí      background: rgba(255, 0, 0, 0.1)
+                              border-left: 2px solid #ff0000
+                              color: #ff0000
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ESPACIADO
+
+Header Padding:        40px
+Section Padding:       30px
+Grid Gap:              40px
+Max Width:            1200px
+
+Márgenes Internos:
+├─ Botones: 12px padding
+├─ Inputs: 12px padding
+├─ Stats: 20px padding
+└─ Items: 12px padding
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ANIMACIONES
+
+SPINNER (Minería)
+┌─╲
+├─ ╲  (Gira 360° cada 1 segundo)
+└─ ╱
+
+TRANSICIONES
+├─ all 0.3s (para cambios de color/borde)
+└─ Ninguna animación distrayente
+
+HOVER EFFECTS
+├─ Botones: border-color cambia a #666
+├─ Inputs: border-color cambia a #666
+└─ Sin escalado ni transformación
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+RESPONSIVE DESIGN
+
+DESKTOP (> 768px)                 MÓVIL (< 768px)
+├─ Grid 2 columnas                ├─ Grid 1 columna
+├─ Espaciado 40px                 ├─ Espaciado 20px
+├─ Max width 1200px               ├─ Ancho 100%
+└─ Altura óptima                  └─ Scrolleable
+
+┌──────────────────────┬──────────────────────┐
+│                      │                      │  DESKTOP
+│      Column 1        │      Column 2        │
+│                      │                      │
+└──────────────────────┴──────────────────────┘
+
+┌──────────────────────────────┐
+│       Column 1 + 2           │
+│       (apiladas)             │
+├──────────────────────────────┤
+│       Column 3 + 4           │
+│       (apiladas)             │
+└──────────────────────────────┘  MÓVIL
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+VENTAJAS DEL DISEÑO
+
+✓ MINIMALISTA
+  └─ Solo elementos esenciales
+  └─ Sin distracciones visuales
+  └─ Foco en funcionalidad
+
+✓ LIMPIO
+  └─ Colores consistentes
+  └─ Tipografía uniforme
+  └─ Espaciado ordenado
+
+✓ PROFESIONAL
+  └─ Aspecto serio y técnico
+  └─ Terminal-style elegante
+  └─ Para aplicaciones financieras
+
+✓ RÁPIDO
+  └─ Sin animaciones pesadas
+  └─ CSS simple
+  └─ Carga instantánea
+
+✓ ACCESIBLE
+  └─ Texto grande y legible
+  └─ Contraste suficiente
+  └─ Navegación clara
+
+✓ RESPONSIVE
+  └─ Funciona en todos los tamaños
+  └─ Móvil, tablet, desktop
+  └─ Fluido y adaptable
+
+✓ SIN DEPENDENCIAS
+  └─ Solo HTML + CSS
+  └─ Sin librerías externas
+  └─ Independiente
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+COMPARATIVA DISEÑOS
+
+                v1.0          v2.0              v3.0
+                ORIGINAL      PROFESIONAL       SILK ROAD
+                ════════════════════════════════════════════════
+
+Emojis          SI            NO                NO
+Iconos          NO            Font Awesome      NO
+Colores         Neón          Modernos          Minimalistas
+Gradientes      SI            SI                NO
+Animaciones     Múltiples     Suaves            Mínimas
+Tipografía      Genérica      Genérica          Monoespaciada
+Sencillez       Normal        Normal            MÁXIMA
+Profesional     Normal        Sí                MUY Sí
+Velocidad       Normal        Normal            Muy Rápida
+Responsive      Sí            Sí                Sí
+Contraste       Medio         Bueno             Excelente
+Accesibilidad   Normal        Buena             Excelente
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+INSPIRACIÓN: SILK ROAD
+
+El diseño está inspirado en Silk Road (el mercado oscuro histórico),
+tomando su estética minimalista y profesional:
+
+├─ Terminal-style
+├─ Oscuro y profesional
+├─ Sin decoración innecesaria
+├─ Eficiente y rápido
+└─ Serio y confiable
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CARACTERÍSTICAS IMPLEMENTADAS
+
+✓ Diseño minimalista
+✓ Tipografía monoespaciada
+✓ Colores oscuros profesionales
+✓ Sin emojis
+✓ Sin iconos innecesarios
+✓ Grid responsive
+✓ Formularios simples
+✓ Navegación clara
+✓ Estadísticas claras
+✓ Historial limpio
+✓ Animación spinner solo para minería
+✓ Alertas funcionales
+✓ Diseño mobile-first
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+INSTALACIÓN Y USO
+
+1. Descargar archivos
+2. pip install -r requirements.txt
+3. python app.py
+4. http://localhost:5000
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                                                                            ║
+║                   SILK ROAD - BLOCKCHAIN MINING NETWORK                   ║
+║                                                                            ║
+║                        DISEÑO MINIMALISTA | v3.0                          ║
+║                                                                            ║
+║                      Limpio. Rápido. Profesional.                         ║
+║                                                                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
